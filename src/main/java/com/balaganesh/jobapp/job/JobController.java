@@ -11,14 +11,14 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/jobs")
+@RequestMapping("/jobs")
 public class JobController {
 
     public JobController(JobService jobService) {
         this.jobService = jobService;
     }
 
-    private JobService jobService;
+    private final JobService jobService;
 
     @GetMapping
     public ResponseEntity<List<Job>>  getJobs() {
@@ -27,11 +27,9 @@ public class JobController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createJob( @RequestBody Job job) {
-
+    public ResponseEntity<String> createJob(@RequestBody Job job) {
          jobService.createJob(job);
-
-        return new ResponseEntity<>( "Job Created SuccessFully" ,HttpStatus.CREATED);
+      return new ResponseEntity<>( "Job Created SuccessFully" ,HttpStatus.CREATED);
     }
 
 

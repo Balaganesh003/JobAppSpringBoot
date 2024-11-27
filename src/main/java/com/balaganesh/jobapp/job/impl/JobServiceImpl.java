@@ -1,65 +1,77 @@
 package com.balaganesh.jobapp.job.impl;
 
 import com.balaganesh.jobapp.job.Job;
+import com.balaganesh.jobapp.job.JobRepository;
 import com.balaganesh.jobapp.job.JobService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobServiceImpl implements JobService {
 
-    private List<Job> jobs = new ArrayList<>();
+    JobRepository jobRepository;
 
-    private Long nextId = 1L;
+
+    public JobServiceImpl(JobRepository jobRepository) {
+        this.jobRepository = jobRepository;
+    }
 
     @Override
     public List<Job> getAllJobs() {
-        return jobs;
+        return jobRepository.findAll();
     }
 
     @Override
     public Job getJobById(Long id) {
-        for (Job job : jobs) {
-            if (job.getId().equals(id)) {
-                return job;
-            }
-        }
-        return null;
+         return jobRepository.findById(id).orElse(null);
     }
 
     @Override
     public void createJob(Job job) {
+        // Create a new Job object
+        Job newJob = new Job();
 
-        job.setId(nextId++);
+        // Extract values from the input job or assign defaults if necessary
+        newJob.setTitle(job.getTitle() != null ? job.getTitle() : "Default Job Title");
+        newJob.setDescription(job.getDescription() != null ? job.getDescription() : "Default Job Description");
+        newJob.setLocation(job.getLocation() != null ? job.getLocation() : "Default Location");
+        newJob.setMinSalary(job.getMinSalary() != null ? job.getMinSalary() : "30000"); // Default minimum salary
+        newJob.setMaxSalary(job.getMaxSalary() != null ? job.getMaxSalary() : "50000"); // Default maximum salary
 
-        jobs.add(job);
+        // Save the new Job object to the database
+        jobRepository.save(newJob);
     }
+
 
     @Override
     public Job deleteJobById(Long id) {
-        for (Job job : jobs) {
-            if (job.getId().equals(id)) {
-                jobs.remove(job);
-                return job;
-            }
+        Job job = jobRepository.findById(id).orElse(null);
+        if (job != null) {
+            jobRepository.deleteById(id);
         }
-        return null;
+        return job;
     }
 
     @Override
     public boolean updateJobById(Long id, Job updatedJob) {
-        for (Job job1 : jobs) {
-            if (job1.getId().equals(id)) {
-                job1.setTitle(updatedJob.getTitle());
-                job1.setDescription(updatedJob.getDescription());
-                job1.setLocation(updatedJob.getLocation());
-                job1.setMinSalary(updatedJob.getMinSalary());
-                job1.setMaxSalary(updatedJob.getMaxSalary());
-                return true;
-            }
+
+        Optional<Job> jobOptional = jobRepository.findById(id);
+
+        if (jobOptional.isEmpty()) {
+            return false;
         }
-        return false;
+
+        Job job = jobOptional.get();
+        job.setTitle(updatedJob.getTitle());
+        job.setDescription(updatedJob.getDescription());
+        job.setLocation(updatedJob.getLocation());
+        job.setMinSalary(updatedJob.getMinSalary());
+        job.setMaxSalary(updatedJob.getMaxSalary());
+        jobRepository.save(job);
+        return true;
+
+
     }
 }

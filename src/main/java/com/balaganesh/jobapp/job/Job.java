@@ -1,12 +1,23 @@
 package com.balaganesh.jobapp.job;
 
+
+import jakarta.persistence.*;
+
+@Entity
 public class Job {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
     private String location;
     private String minSalary;
     private String maxSalary;
+
+
+    public Job() {
+    }
 
     public Job(Long id, String title, String description, String location, String minSalary, String maxSalary) {
         this.id = id;
@@ -16,6 +27,8 @@ public class Job {
         this.minSalary = minSalary;
         this.maxSalary = maxSalary;
     }
+
+
 
     public Long getId() {
         return id;
@@ -64,4 +77,6 @@ public class Job {
     public void setMaxSalary(String maxSalary) {
         this.maxSalary = maxSalary;
     }
+
+
 }
