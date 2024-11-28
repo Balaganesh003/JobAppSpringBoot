@@ -13,9 +13,11 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final CompanyRepository companyRepository;
 
-    public CompanyController(CompanyService companyService) {
+    public CompanyController(CompanyService companyService, CompanyRepository companyRepository) {
         this.companyService = companyService;
+        this.companyRepository = companyRepository;
     }
 
     @GetMapping
@@ -32,5 +34,17 @@ public class CompanyController {
     public Company addCompany(@RequestBody Company company) {
         return companyService.addCompany(company);
     }
+
+    @DeleteMapping("/{id}")
+    public Boolean deleteCompanyById(@PathVariable Long id) {
+
+        return companyService.deleteCompanyById(id);
+    }
+
+    @GetMapping("/{id}")
+    public Company getCompanyById(@PathVariable Long id) {
+        return companyService.getCompanyById(id);
+    }
+
 
 }
