@@ -3,15 +3,17 @@ package com.balaganesh.jobapp.job.impl;
 import com.balaganesh.jobapp.job.Job;
 import com.balaganesh.jobapp.job.JobRepository;
 import com.balaganesh.jobapp.job.JobService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class JobServiceImpl implements JobService {
 
-    JobRepository jobRepository;
+    private final JobRepository jobRepository;
 
 
     public JobServiceImpl(JobRepository jobRepository) {
@@ -30,18 +32,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public void createJob(Job job) {
-        // Create a new Job object
-        Job newJob = new Job();
-
-        // Extract values from the input job or assign defaults if necessary
-        newJob.setTitle(job.getTitle() != null ? job.getTitle() : "Default Job Title");
-        newJob.setDescription(job.getDescription() != null ? job.getDescription() : "Default Job Description");
-        newJob.setLocation(job.getLocation() != null ? job.getLocation() : "Default Location");
-        newJob.setMinSalary(job.getMinSalary() != null ? job.getMinSalary() : "30000"); // Default minimum salary
-        newJob.setMaxSalary(job.getMaxSalary() != null ? job.getMaxSalary() : "50000"); // Default maximum salary
-
-        // Save the new Job object to the database
-        jobRepository.save(newJob);
+        jobRepository.save(job);
     }
 
 
