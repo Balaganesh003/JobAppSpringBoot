@@ -13,11 +13,11 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService companyService;
-    private final CompanyRepository companyRepository;
 
-    public CompanyController(CompanyService companyService, CompanyRepository companyRepository) {
+
+    public CompanyController(CompanyService companyService) {
         this.companyService = companyService;
-        this.companyRepository = companyRepository;
+
     }
 
     @GetMapping
