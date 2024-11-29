@@ -1,9 +1,7 @@
 package com.balaganesh.jobapp.company;
 
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,37 +12,49 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-
     public CompanyController(CompanyService companyService) {
         this.companyService = companyService;
-
     }
 
     @GetMapping
-    public List<Company> getAllCompanies() {
-        return companyService.getAllCompanies();
+    public ResponseEntity<List<Company>> getAllCompanies() {
+        List<Company> companies = companyService.getAllCompanies();
+        return ResponseEntity.ok(companies);
     }
 
     @PutMapping("/{id}")
-    public Boolean UpdateCompanyById(@PathVariable Long id, @RequestBody Company updatedCompany) {
-        return companyService.UpdateCompanyById(id, updatedCompany);
+    public ResponseEntity<String> updateCompanyById(@PathVariable Long id, @RequestBody Company updatedCompany) {
+        Boolean isUpdated = companyService.UpdateCompanyById(id, updatedCompany);
+        if (isUpdated) {
+            return ResponseEntity.ok("Company updated successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
+        }
     }
 
     @PostMapping
-    public Company addCompany(@RequestBody Company company) {
-        return companyService.addCompany(company);
+    public ResponseEntity<Company> addCompany(@RequestBody Company company) {
+        Company savedCompany = companyService.addCompany(company);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCompany);
     }
 
     @DeleteMapping("/{id}")
-    public Boolean deleteCompanyById(@PathVariable Long id) {
-
-        return companyService.deleteCompanyById(id);
+    public ResponseEntity<String> deleteCompanyById(@PathVariable Long id) {
+        Boolean isDeleted = companyService.deleteCompanyById(id);
+        if (isDeleted) {
+            return ResponseEntity.ok("Company deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
+        }
     }
 
     @GetMapping("/{id}")
-    public Company getCompanyById(@PathVariable Long id) {
-        return companyService.getCompanyById(id);
+    public ResponseEntity<Company> getCompanyById(@PathVariable Long id) {
+        Company company = companyService.getCompanyById(id);
+        if (company != null) {
+            return ResponseEntity.ok(company);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
-
-
 }
